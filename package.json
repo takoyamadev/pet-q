@@ -12,10 +12,19 @@
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.2.1",
 		"@opennextjs/cloudflare": "^1.6.2",
+		"@supabase/ssr": "^0.6.1",
+		"@supabase/supabase-js": "^2.53.0",
+		"date-fns": "^4.1.0",
+		"jotai": "^2.12.5",
+		"lucide-react": "^0.534.0",
+		"microcms-js-sdk": "^3.2.0",
 		"next": "15.3.5",
 		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react-dom": "^19.0.0",
+		"react-hook-form": "^7.61.1",
+		"zod": "^4.0.14"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",
