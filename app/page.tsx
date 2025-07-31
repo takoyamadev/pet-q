@@ -1,20 +1,20 @@
-import { CategoryGrid } from '@/components/category/CategoryGrid'
-import { ThreadList } from '@/components/thread/ThreadList'
-import { getMainCategories } from '@/lib/api/categories'
-import { getLatestThreads, getPopularThreads } from '@/lib/api/threads'
-import { getAnnouncements } from '@/lib/microcms/client'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import Link from 'next/link'
-import { Plus, Calendar } from 'lucide-react'
-import { format } from 'date-fns'
-import { ja } from 'date-fns/locale'
+import { CategoryGrid } from "@/components/category/CategoryGrid";
+import { ThreadList } from "@/components/thread/ThreadList";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { getMainCategories } from "@/lib/api/categories";
+import { getLatestThreads, getPopularThreads } from "@/lib/api/threads";
+import { getAnnouncements } from "@/lib/microcms/client";
+import { format } from "date-fns";
+import { ja } from "date-fns/locale";
+import { Calendar, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default async function Home() {
-  const categories = await getMainCategories()
-  const latestThreads = await getLatestThreads(5)
-  const popularThreads = await getPopularThreads(undefined, 5)
-  const announcements = await getAnnouncements(3)
+  const categories = await getMainCategories();
+  const latestThreads = await getLatestThreads(5);
+  const popularThreads = await getPopularThreads(undefined, 5);
+  const announcements = await getAnnouncements(3);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -40,7 +40,9 @@ export default async function Home() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">新着スレッド</h2>
           <Link href="/threads">
-            <Button variant="ghost" size="sm">すべて見る →</Button>
+            <Button variant="ghost" size="sm" className="cursor-pointer">
+              すべて見る →
+            </Button>
           </Link>
         </div>
         {latestThreads.length > 0 ? (
@@ -59,7 +61,9 @@ export default async function Home() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">人気スレッド</h2>
           <Link href="/threads/popular">
-            <Button variant="ghost" size="sm">すべて見る →</Button>
+            <Button variant="ghost" size="sm" className="cursor-pointer">
+              すべて見る →
+            </Button>
           </Link>
         </div>
         {popularThreads.length > 0 ? (
@@ -78,13 +82,18 @@ export default async function Home() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">お知らせ</h2>
           <Link href="/announcements">
-            <Button variant="ghost" size="sm">すべて見る →</Button>
+            <Button variant="ghost" size="sm" className="cursor-pointer">
+              すべて見る →
+            </Button>
           </Link>
         </div>
         {announcements.length > 0 ? (
           <div className="space-y-4">
             {announcements.map((announcement) => (
-              <Link key={announcement.id} href={`/announcements/${announcement.id}`}>
+              <Link
+                key={announcement.id}
+                href={`/announcements/${announcement.id}`}
+              >
                 <Card className="hover:border-primary transition-colors">
                   <div className="flex items-center justify-between">
                     <div>
@@ -92,7 +101,11 @@ export default async function Home() {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                         <Calendar size={14} />
                         <time>
-                          {format(new Date(announcement.publishedAt), 'yyyy/MM/dd', { locale: ja })}
+                          {format(
+                            new Date(announcement.publishedAt),
+                            "yyyy/MM/dd",
+                            { locale: ja }
+                          )}
                         </time>
                       </div>
                     </div>
@@ -120,5 +133,5 @@ export default async function Home() {
         </Button>
       </Link>
     </div>
-  )
+  );
 }
