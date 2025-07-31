@@ -104,7 +104,7 @@ export default async function Home() {
                           {format(
                             new Date(announcement.publishedAt),
                             "yyyy/MM/dd",
-                            { locale: ja }
+                            { locale: ja },
                           )}
                         </time>
                       </div>

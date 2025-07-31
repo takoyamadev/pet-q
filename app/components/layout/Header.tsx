@@ -1,21 +1,21 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { Search, Menu } from 'lucide-react'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from "next/link";
+import { Search, Menu } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const router = useRouter()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
-  }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-surface border-b border-border">
@@ -28,7 +28,10 @@ export function Header() {
           </Link>
 
           {/* 検索バー（デスクトップ） */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-8">
+          <form
+            onSubmit={handleSearch}
+            className="hidden md:flex flex-1 max-w-md mx-8"
+          >
             <div className="relative w-full">
               <input
                 type="text"
@@ -48,10 +51,16 @@ export function Header() {
 
           {/* ナビゲーション */}
           <nav className="hidden md:flex items-center space-x-4">
-            <Link href="/threads/new" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              href="/threads/new"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               スレッド作成
             </Link>
-            <Link href="/announcements" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              href="/announcements"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               お知らせ
             </Link>
           </nav>
@@ -86,15 +95,15 @@ export function Header() {
               </div>
             </form>
             <nav className="space-y-2">
-              <Link 
-                href="/threads/new" 
+              <Link
+                href="/threads/new"
                 className="block px-4 py-2 text-foreground hover:bg-muted rounded-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
                 スレッド作成
               </Link>
-              <Link 
-                href="/announcements" 
+              <Link
+                href="/announcements"
                 className="block px-4 py-2 text-foreground hover:bg-muted rounded-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -105,5 +114,5 @@ export function Header() {
         )}
       </div>
     </header>
-  )
+  );
 }

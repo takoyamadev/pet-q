@@ -1,7 +1,7 @@
-import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Home, ArrowLeft } from 'lucide-react'
+import Link from "next/link";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Home, ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -22,8 +22,8 @@ export default function NotFound() {
                 トップページに戻る
               </Button>
             </Link>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => window.history.back()}
               className="flex items-center gap-2"
             >
@@ -34,5 +34,5 @@ export default function NotFound() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

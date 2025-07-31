@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "PetQ（ペットキュー）- ペット飼育者のための匿名掲示板",
-  description: "ペット飼育者同士が気軽に情報交換できる匿名掲示板。犬・猫・小動物・鳥・爬虫類など、あらゆるペットの飼育相談・健康・しつけ・雑談ができるコミュニティサイトです。",
+  description:
+    "ペット飼育者同士が気軽に情報交換できる匿名掲示板。犬・猫・小動物・鳥・爬虫類など、あらゆるペットの飼育相談・健康・しつけ・雑談ができるコミュニティサイトです。",
   keywords: "ペット,掲示板,犬,猫,小動物,鳥,爬虫類,飼育相談,ペット健康,しつけ",
   openGraph: {
     title: "PetQ（ペットキュー）",
@@ -36,9 +37,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <Header />
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { AlertTriangle, RotateCcw } from 'lucide-react'
+import { useEffect } from "react";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { AlertTriangle, RotateCcw } from "lucide-react";
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Application error:', error)
-  }, [error])
+    console.error("Application error:", error);
+  }, [error]);
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -29,15 +29,12 @@ export default function Error({
               申し訳ございません。予期しないエラーが発生しました。
             </p>
           </div>
-          <Button 
-            onClick={reset}
-            className="flex items-center gap-2 mx-auto"
-          >
+          <Button onClick={reset} className="flex items-center gap-2 mx-auto">
             <RotateCcw size={20} />
             再試行
           </Button>
         </div>
       </Card>
     </div>
-  )
+  );
 }

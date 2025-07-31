@@ -1,29 +1,32 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Button } from '@/components/ui/Button'
-import { createResponse, type CreateResponseInput } from '@/actions/response'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/Button";
+import { createResponse, type CreateResponseInput } from "@/actions/response";
 
 interface ResponseFormProps {
-  threadId: string
-  onSuccess?: () => void
+  threadId: string;
+  onSuccess?: () => void;
 }
 
 const schema = z.object({
-  content: z.string().min(1, '本文を入力してください').max(1000, '本文は1000文字以内で入力してください'),
-})
+  content: z
+    .string()
+    .min(1, "本文を入力してください")
+    .max(1000, "本文は1000文字以内で入力してください"),
+});
 
-type FormData = z.infer<typeof schema>
+type FormData = z.infer<typeof schema>;
 
 export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [anchorNumber, setAnchorNumber] = useState<string>('')
-  
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [anchorNumber, setAnchorNumber] = useState<string>("");
+
   const {
     register,
     handleSubmit,
@@ -32,41 +35,41 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
     setValue,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema)
-  })
-  
+    resolver: zodResolver(schema),
+  });
+
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     try {
       const result = await createResponse({
         threadId,
         content: data.content,
-      } as CreateResponseInput)
-      
+      } as CreateResponseInput);
+
       if (result.success) {
-        reset()
-        setAnchorNumber('')
-        router.refresh()
-        onSuccess?.()
+        reset();
+        setAnchorNumber("");
+        router.refresh();
+        onSuccess?.();
       } else {
-        alert(result.error || 'レスの投稿に失敗しました')
+        alert(result.error || "レスの投稿に失敗しました");
       }
     } catch {
-      alert('エラーが発生しました')
+      alert("エラーが発生しました");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
-  
+  };
+
   // アンカー追加
   const addAnchor = (number: string) => {
-    const currentContent = watch('content') || ''
-    const anchorText = `>>${number}\n`
-    setValue('content', anchorText + currentContent)
-    setAnchorNumber(number)
-  }
-  
+    const currentContent = watch("content") || "";
+    const anchorText = `>>${number}\n`;
+    setValue("content", anchorText + currentContent);
+    setAnchorNumber(number);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* アンカー入力（簡易版） */}
@@ -89,11 +92,11 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
           追加
         </Button>
       </div>
-      
+
       {/* 本文 */}
       <div>
         <textarea
-          {...register('content')}
+          {...register("content")}
           rows={6}
           className="w-full px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
           placeholder="レスを入力..."
@@ -102,22 +105,22 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
           <p className="text-error text-sm mt-1">{errors.content.message}</p>
         )}
         <p className="text-sm text-muted-foreground mt-1">
-          {watch('content')?.length || 0}/1000文字
+          {watch("content")?.length || 0}/1000文字
         </p>
       </div>
-      
+
       {/* 注意事項 */}
       <div className="text-sm text-muted-foreground">
         <p>※ 連続投稿は1分間に1回までです</p>
         <p>※ 個人情報の投稿はお控えください</p>
       </div>
-      
+
       {/* 送信ボタン */}
       <div className="flex justify-end">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? '投稿中...' : 'レスを投稿'}
+          {isSubmitting ? "投稿中..." : "レスを投稿"}
         </Button>
       </div>
     </form>
-  )
+  );
 }
