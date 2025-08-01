@@ -1,5 +1,5 @@
-import { createClient } from "microcms-js-sdk";
 import type { Announcement } from "@/types";
+import { createClient } from "microcms-js-sdk";
 
 export const client = createClient({
   serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN!,
@@ -27,6 +27,7 @@ export async function getAnnouncementById(id: string) {
       endpoint: "announcements",
       contentId: id,
     });
+    console.log(announcement);
     return announcement as Announcement;
   } catch (error) {
     console.error("お知らせ詳細取得エラー:", error);

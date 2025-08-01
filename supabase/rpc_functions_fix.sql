@@ -1,91 +1,5 @@
--- スレッド作成RPC
-CREATE OR REPLACE FUNCTION create_thread(
-  p_title TEXT,
-  p_content TEXT,
-  p_category_id UUID,
-  p_sub_category_id UUID,
-  p_image_urls TEXT[] DEFAULT '{}',
-  p_user_ip INET DEFAULT NULL
-)
-RETURNS threads AS $$
-DECLARE
-  v_thread threads;
-BEGIN
-  -- 同一IPからの連続投稿制限（1分間に1投稿）
-  IF p_user_ip IS NOT NULL THEN
-    IF EXISTS (
-      SELECT 1 FROM threads
-      WHERE user_ip = p_user_ip
-      AND created_at > NOW() - INTERVAL '1 minute'
-    ) THEN
-      RAISE EXCEPTION '連続投稿はできません。1分後に再度お試しください。';
-    END IF;
-  END IF;
-
-  -- スレッド作成
-  INSERT INTO threads (
-    title,
-    content,
-    category_id,
-    sub_category_id,
-    image_urls,
-    user_ip
-  ) VALUES (
-    p_title,
-    p_content,
-    p_category_id,
-    p_sub_category_id,
-    p_image_urls,
-    p_user_ip
-  ) RETURNING * INTO v_thread;
-
-  RETURN v_thread;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- レスポンス作成RPC
-CREATE OR REPLACE FUNCTION create_response(
-  p_thread_id UUID,
-  p_content TEXT,
-  p_image_urls TEXT[] DEFAULT '{}',
-  p_anchor_to UUID DEFAULT NULL,
-  p_user_ip INET DEFAULT NULL
-)
-RETURNS responses AS $$
-DECLARE
-  v_response responses;
-BEGIN
-  -- 同一IPからの連続投稿制限（1分間に1投稿）
-  IF p_user_ip IS NOT NULL THEN
-    IF EXISTS (
-      SELECT 1 FROM responses
-      WHERE user_ip = p_user_ip
-      AND created_at > NOW() - INTERVAL '1 minute'
-    ) THEN
-      RAISE EXCEPTION '連続投稿はできません。1分後に再度お試しください。';
-    END IF;
-  END IF;
-
-  -- レスポンス作成
-  INSERT INTO responses (
-    thread_id,
-    content,
-    image_urls,
-    anchor_to,
-    user_ip
-  ) VALUES (
-    p_thread_id,
-    p_content,
-    p_image_urls,
-    p_anchor_to,
-    p_user_ip
-  ) RETURNING * INTO v_response;
-
-  RETURN v_response;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- スレッド検索RPC
+-- スレッド検索RPC（修正版）
+DROP FUNCTION IF EXISTS search_threads;
 CREATE OR REPLACE FUNCTION search_threads(
   p_keyword TEXT DEFAULT NULL,
   p_category_id UUID DEFAULT NULL,
@@ -138,7 +52,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 人気スレッド取得RPC
+-- 人気スレッド取得RPC（修正版）
+DROP FUNCTION IF EXISTS get_popular_threads;
 CREATE OR REPLACE FUNCTION get_popular_threads(
   p_category_id UUID DEFAULT NULL,
   p_limit INTEGER DEFAULT 10

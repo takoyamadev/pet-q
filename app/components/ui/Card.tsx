@@ -1,4 +1,6 @@
-import { ReactNode, CSSProperties } from "react";
+"use client";
+
+import { CSSProperties, ReactNode } from "react";
 
 interface CardProps {
   children: ReactNode;
@@ -19,7 +21,9 @@ export function Card({
     <div
       id={id}
       style={style}
-      className={`bg-surface rounded-[var(--radius)] border border-border p-4 ${onClick ? "cursor-pointer hover:shadow-md transition-shadow" : ""} ${className}`}
+      className={`bg-surface rounded-[var(--radius)] border border-border p-4 ${
+        onClick ? "cursor-pointer hover:shadow-md transition-shadow" : ""
+      } ${className}`}
       onClick={onClick}
     >
       {children}

@@ -29,7 +29,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/rules"
+                  href="/terms"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   利用規約
