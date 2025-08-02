@@ -7,7 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { createThread, type CreateThreadInput } from "@/actions/thread";
+import { createThread } from "@/actions/thread";
+import type { CreateThreadInput } from "@/types/actions";
 import type { Category } from "@/types";
 
 interface ThreadFormProps {

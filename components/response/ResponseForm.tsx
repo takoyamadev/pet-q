@@ -6,11 +6,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
-import { createResponse, type CreateResponseInput } from "@/actions/response";
+import { createResponse } from "@/actions/response";
+import type { CreateResponseInput } from "@/types/actions";
 
 interface ResponseFormProps {
   threadId: string;
   onSuccess?: () => void;
+  responses?: any[];
+  onResponseClick?: (number: number) => void;
 }
 
 const schema = z.object({
@@ -22,10 +25,10 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
+export function ResponseForm({ threadId, onSuccess, responses = [], onResponseClick }: ResponseFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [anchorNumber, setAnchorNumber] = useState<string>("");
+  const [selectedResponses, setSelectedResponses] = useState<number[]>([]);
 
   const {
     register,
@@ -49,7 +52,7 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
 
       if (result.success) {
         reset();
-        setAnchorNumber("");
+        setSelectedResponses([]);
         router.refresh();
         onSuccess?.();
       } else {
@@ -62,37 +65,23 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
     }
   };
 
-  // アンカー追加
-  const addAnchor = (number: string) => {
+  // レス番号をクリックしたときの処理
+  const handleResponseClick = (number: number) => {
     const currentContent = watch("content") || "";
     const anchorText = `>>${number}\n`;
     setValue("content", anchorText + currentContent);
-    setAnchorNumber(number);
+    
+    if (!selectedResponses.includes(number)) {
+      setSelectedResponses([...selectedResponses, number]);
+    }
+    
+    if (onResponseClick) {
+      onResponseClick(number);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* アンカー入力（簡易版） */}
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">返信先:</span>
-        <input
-          type="text"
-          value={anchorNumber}
-          onChange={(e) => setAnchorNumber(e.target.value)}
-          placeholder="レス番号"
-          className="w-20 px-2 py-1 text-sm border border-border rounded bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={() => anchorNumber && addAnchor(anchorNumber)}
-          disabled={!anchorNumber}
-        >
-          追加
-        </Button>
-      </div>
-
       {/* 本文 */}
       <div>
         <textarea
@@ -108,6 +97,22 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
           {watch("content")?.length || 0}/1000文字
         </p>
       </div>
+
+      {/* レス選択ボタン */}
+      {selectedResponses.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          <span className="text-sm text-muted-foreground">返信先:</span>
+          {selectedResponses.map((num) => (
+            <span
+              key={num}
+              className="text-sm px-2 py-1 bg-primary/10 text-primary rounded cursor-pointer hover:bg-primary/20"
+              onClick={() => handleResponseClick(num)}
+            >
+              >>{num}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* 注意事項 */}
       <div className="text-sm text-muted-foreground">

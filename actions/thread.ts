@@ -1,29 +1,10 @@
 "use server";
 
+import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { z } from "zod";
-
-// バリデーションスキーマ
-const createThreadSchema = z.object({
-  title: z
-    .string()
-    .min(1, "タイトルを入力してください")
-    .max(100, "タイトルは100文字以内で入力してください"),
-  content: z
-    .string()
-    .min(1, "本文を入力してください")
-    .max(2000, "本文は2000文字以内で入力してください"),
-  categoryId: z.string().uuid("カテゴリを選択してください"),
-  subCategoryId: z.string().uuid("サブカテゴリを選択してください"),
-  imageUrls: z
-    .array(z.string().url())
-    .max(3, "画像は3枚まで投稿できます")
-    .optional(),
-});
-
-export type CreateThreadInput = z.infer<typeof createThreadSchema>;
+import { createThreadSchema, type CreateThreadInput } from "@/types/actions";
 
 // スレッド作成アクション
 export async function createThread(input: CreateThreadInput) {

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getThreadById } from "@/lib/api/threads";
 import { getResponsesByThreadId } from "@/lib/api/responses";
 import { Card } from "@/components/ui/Card";
-import { ResponseForm } from "@/components/response/ResponseForm";
+import { ThreadContent } from "@/components/thread/ThreadContent";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
@@ -96,54 +96,8 @@ export default async function ThreadPage({
         </div>
       </Card>
 
-      {/* レスポンス一覧 */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">レス（{responses.length}件）</h2>
-
-        {responses.length === 0 ? (
-          <Card>
-            <p className="text-center text-muted-foreground py-8">
-              まだレスがありません
-            </p>
-          </Card>
-        ) : (
-          responses.map((response, index) => (
-            <Card key={response.id} id={`res-${index + 1}`}>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-primary">
-                    {index + 1}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {format(
-                      new Date(response.created_at),
-                      "yyyy/MM/dd HH:mm:ss",
-                      { locale: ja },
-                    )}
-                  </span>
-                </div>
-
-                {/* アンカー表示 */}
-                {response.anchor_to && (
-                  <div className="text-sm text-primary">
-                    {`>>${responses.findIndex((r) => r.id === response.anchor_to) + 1}`}
-                  </div>
-                )}
-
-                <div className="whitespace-pre-wrap">{response.content}</div>
-
-                {/* 画像表示（TODO: 実装） */}
-              </div>
-            </Card>
-          ))
-        )}
-      </div>
-
-      {/* レス投稿フォーム */}
-      <Card className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">レスを投稿</h3>
-        <ResponseForm threadId={threadId} />
-      </Card>
+      {/* スレッド内容とレス */}
+      <ThreadContent threadId={threadId} responses={responses} />
     </div>
   );
 }

@@ -1,25 +1,10 @@
 "use server";
 
+import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { z } from "zod";
-
-// バリデーションスキーマ
-const createResponseSchema = z.object({
-  threadId: z.string().uuid("スレッドIDが無効です"),
-  content: z
-    .string()
-    .min(1, "本文を入力してください")
-    .max(1000, "本文は1000文字以内で入力してください"),
-  anchorTo: z.string().uuid().optional(),
-  imageUrls: z
-    .array(z.string().url())
-    .max(3, "画像は3枚まで投稿できます")
-    .optional(),
-});
-
-export type CreateResponseInput = z.infer<typeof createResponseSchema>;
+import { createResponseSchema, type CreateResponseInput } from "@/types/actions";
 
 // レスポンス作成アクション
 export async function createResponse(input: CreateResponseInput) {
