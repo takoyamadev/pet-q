@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Card } from "@/components/ui/Card";
 import { ResponseForm } from "@/components/response/ResponseForm";
+import { Card } from "@/components/ui/Card";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
+import { useState } from "react";
 
 interface ThreadContentProps {
   threadId: string;
@@ -15,30 +15,20 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
   const [selectedResponse, setSelectedResponse] = useState<number | null>(null);
 
   const handleResponseNumberClick = (number: number) => {
-    const form = document.querySelector('textarea');
+    const form = document.querySelector("textarea");
     if (form) {
       const currentContent = form.value || "";
       form.value = `>>${number}\n${currentContent}`;
       form.focus();
-      
+
       // React Hook Formのvalueを更新
-      const event = new Event('input', { bubbles: true });
+      const event = new Event("input", { bubbles: true });
       form.dispatchEvent(event);
     }
   };
 
   return (
     <>
-      {/* レス投稿フォーム */}
-      <Card className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">レスを投稿</h3>
-        <ResponseForm 
-          threadId={threadId} 
-          responses={responses}
-          onResponseClick={(num) => setSelectedResponse(num)}
-        />
-      </Card>
-
       {/* レスポンス一覧 */}
       <div className="space-y-4 mt-8">
         <h2 className="text-xl font-semibold">レス（{responses.length}件）</h2>
@@ -54,7 +44,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
             <Card key={response.id} id={`res-${index + 1}`}>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span 
+                  <span
                     className="font-semibold text-primary cursor-pointer hover:underline"
                     onClick={() => handleResponseNumberClick(index + 1)}
                   >
@@ -64,7 +54,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                     {format(
                       new Date(response.created_at),
                       "yyyy/MM/dd HH:mm:ss",
-                      { locale: ja },
+                      { locale: ja }
                     )}
                   </span>
                 </div>
@@ -72,7 +62,10 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                 {/* アンカー表示 */}
                 {response.anchor_to && (
                   <div className="text-sm text-primary">
-                    {`>>${responses.findIndex((r) => r.id === response.anchor_to) + 1}`}
+                    {`>>${
+                      responses.findIndex((r) => r.id === response.anchor_to) +
+                      1
+                    }`}
                   </div>
                 )}
 
@@ -88,7 +81,9 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                           className="text-primary hover:underline cursor-pointer"
                           onClick={(e) => {
                             e.preventDefault();
-                            const element = document.getElementById(`res-${num}`);
+                            const element = document.getElementById(
+                              `res-${num}`
+                            );
                             if (element) {
                               element.scrollIntoView({ behavior: "smooth" });
                             }
@@ -108,6 +103,16 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
           ))
         )}
       </div>
+
+      {/* レス投稿フォーム */}
+      <Card className="mt-8">
+        <h3 className="text-lg font-semibold mb-4">レスを投稿</h3>
+        <ResponseForm
+          threadId={threadId}
+          responses={responses}
+          onResponseClick={(num) => setSelectedResponse(num)}
+        />
+      </Card>
     </>
   );
 }

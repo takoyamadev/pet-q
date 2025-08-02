@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { CONTACT_SUBJECTS } from "@/lib/constants/contact";
 import { Send } from "lucide-react";
+import { useState } from "react";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // バリデーション
     if (!formData.message.trim()) {
       setSubmitStatus({
@@ -54,13 +54,13 @@ export default function ContactPage() {
       if (!response.ok) {
         throw new Error(data.error || "送信に失敗しました");
       }
-      
+
       // 成功時の処理
       setSubmitStatus({
         type: "success",
         message: "お問い合わせを受け付けました。ありがとうございます。",
       });
-      
+
       // フォームをリセット
       setFormData({
         name: "",
@@ -71,7 +71,10 @@ export default function ContactPage() {
     } catch (error) {
       setSubmitStatus({
         type: "error",
-        message: error instanceof Error ? error.message : "送信に失敗しました。時間をおいて再度お試しください。",
+        message:
+          error instanceof Error
+            ? error.message
+            : "送信に失敗しました。時間をおいて再度お試しください。",
       });
     } finally {
       setIsSubmitting(false);
@@ -79,7 +82,9 @@ export default function ContactPage() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -95,7 +100,7 @@ export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <h1 className="text-3xl font-bold mb-8">お問い合わせ</h1>
-      
+
       <Card className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* 名前 */}
@@ -136,7 +141,7 @@ export default function ContactPage() {
           {/* 件名 */}
           <div>
             <label htmlFor="subject" className="block text-sm font-medium mb-2">
-              件名
+              件名 <span className="text-destructive text-red-500">*</span>
             </label>
             <select
               id="subject"
@@ -156,7 +161,7 @@ export default function ContactPage() {
           {/* 本文 */}
           <div>
             <label htmlFor="message" className="block text-sm font-medium mb-2">
-              本文 <span className="text-destructive">*</span>
+              本文 <span className="text-destructive text-red-500">*</span>
             </label>
             <textarea
               id="message"
@@ -184,11 +189,7 @@ export default function ContactPage() {
           )}
 
           {/* 送信ボタン */}
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full"
-          >
+          <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting ? (
               "送信中..."
             ) : (
@@ -203,9 +204,11 @@ export default function ContactPage() {
 
       {/* 注意事項 */}
       <div className="mt-8 text-sm text-muted-foreground space-y-2">
-        <p>※ お問い合わせいただいた内容は、サービス改善のために利用させていただきます。</p>
+        <p>
+          ※
+          お問い合わせいただいた内容は、サービス改善のために利用させていただきます。
+        </p>
         <p>※ 返信が必要な場合は、メールアドレスを必ずご入力ください。</p>
-        <p>※ 通常、3営業日以内に返信いたします。</p>
       </div>
     </div>
   );

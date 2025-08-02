@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/Button";
 import { createResponse } from "@/actions/response";
+import { Button } from "@/components/ui/Button";
 import type { CreateResponseInput } from "@/types/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface ResponseFormProps {
   threadId: string;
@@ -25,10 +25,14 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function ResponseForm({ threadId, onSuccess, responses = [], onResponseClick }: ResponseFormProps) {
+export function ResponseForm({
+  threadId,
+  onSuccess,
+  responses = [],
+  onResponseClick,
+}: ResponseFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedResponses, setSelectedResponses] = useState<number[]>([]);
 
   const {
     register,
@@ -52,7 +56,6 @@ export function ResponseForm({ threadId, onSuccess, responses = [], onResponseCl
 
       if (result.success) {
         reset();
-        setSelectedResponses([]);
         router.refresh();
         onSuccess?.();
       } else {
@@ -62,21 +65,6 @@ export function ResponseForm({ threadId, onSuccess, responses = [], onResponseCl
       alert("エラーが発生しました");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  // レス番号をクリックしたときの処理
-  const handleResponseClick = (number: number) => {
-    const currentContent = watch("content") || "";
-    const anchorText = `>>${number}\n`;
-    setValue("content", anchorText + currentContent);
-    
-    if (!selectedResponses.includes(number)) {
-      setSelectedResponses([...selectedResponses, number]);
-    }
-    
-    if (onResponseClick) {
-      onResponseClick(number);
     }
   };
 
@@ -96,23 +84,20 @@ export function ResponseForm({ threadId, onSuccess, responses = [], onResponseCl
         <p className="text-sm text-muted-foreground mt-1">
           {watch("content")?.length || 0}/1000文字
         </p>
-      </div>
 
-      {/* レス選択ボタン */}
-      {selectedResponses.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          <span className="text-sm text-muted-foreground">返信先:</span>
-          {selectedResponses.map((num) => (
-            <span
-              key={num}
-              className="text-sm px-2 py-1 bg-primary/10 text-primary rounded cursor-pointer hover:bg-primary/20"
-              onClick={() => handleResponseClick(num)}
-            >
-              >>{num}
-            </span>
-          ))}
+        {/* アンカーの使い方説明 */}
+        <div className="text-xs text-muted-foreground mt-2 p-2 bg-muted/30 rounded">
+          <p>
+            <strong>アンカーの付け方：</strong>
+          </p>
+          <p>• レス番号をクリックすると自動で「&gt;&gt;数字」が挿入されます</p>
+          <p>• 手動で「&gt;&gt;1」のように入力することもできます</p>
+          <p>
+            •
+            複数のレスに返信する場合は改行して「&gt;&gt;2」「&gt;&gt;3」と続けてください
+          </p>
         </div>
-      )}
+      </div>
 
       {/* 注意事項 */}
       <div className="text-sm text-muted-foreground">

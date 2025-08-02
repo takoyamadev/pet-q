@@ -1,9 +1,9 @@
 "use client";
 
+import { Menu, Search } from "lucide-react";
 import Link from "next/link";
-import { Search, Menu } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,16 +52,16 @@ export function Header() {
           {/* ナビゲーション */}
           <nav className="hidden md:flex items-center space-x-4">
             <Link
-              href="/threads/new"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              スレッド作成
-            </Link>
-            <Link
               href="/announcements"
               className="text-foreground hover:text-primary transition-colors"
             >
               お知らせ
+            </Link>
+            <Link
+              href="/threads/new"
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              スレッド作成
             </Link>
           </nav>
 
