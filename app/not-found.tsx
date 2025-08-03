@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { ArrowLeft, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -24,14 +24,6 @@ export default function NotFound() {
                 トップページに戻る
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              onClick={() => window.history.back()}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft size={20} />
-              前のページに戻る
-            </Button>
           </div>
         </div>
       </Card>
