@@ -3,6 +3,7 @@ import { getThreadById } from "@/lib/api/threads";
 import { getResponsesByThreadId } from "@/lib/api/responses";
 import { Card } from "@/components/ui/Card";
 import { ThreadContent } from "@/components/thread/ThreadContent";
+import { ScrollToTopButton } from "@/components/ui/ScrollToTopButton";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
@@ -27,6 +28,13 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Displays a discussion thread and its responses based on the provided thread ID.
+ *
+ * Fetches the thread and associated responses, renders thread details, breadcrumb navigation, and a scroll-to-top button. If the thread does not exist, renders a 404 page.
+ *
+ * @param params - A promise resolving to an object containing the `threadId` of the thread to display
+ */
 export default async function ThreadPage({
   params,
 }: {
@@ -98,6 +106,9 @@ export default async function ThreadPage({
 
       {/* スレッド内容とレス */}
       <ThreadContent threadId={threadId} responses={responses} />
+
+      {/* 画面上まで戻るボタン */}
+      <ScrollToTopButton />
     </div>
   );
 }
