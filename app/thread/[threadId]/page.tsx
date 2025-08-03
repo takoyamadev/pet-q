@@ -3,6 +3,7 @@ import { getThreadById } from "@/lib/api/threads";
 import { getResponsesByThreadId } from "@/lib/api/responses";
 import { Card } from "@/components/ui/Card";
 import { ThreadContent } from "@/components/thread/ThreadContent";
+import { ScrollToTopButton } from "@/components/ui/ScrollToTopButton";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
@@ -98,6 +99,9 @@ export default async function ThreadPage({
 
       {/* スレッド内容とレス */}
       <ThreadContent threadId={threadId} responses={responses} />
+
+      {/* 画面上まで戻るボタン */}
+      <ScrollToTopButton />
     </div>
   );
 }
