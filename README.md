@@ -1,3 +1,7 @@
+# CodeRabbit
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/takoyamadev/pet-q?utm_source=oss&utm_medium=github&utm_campaign=takoyamadev%2Fpet-q&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 # PetQ（ペットキュー）
 
 ペット飼育者のための匿名掲示板サービスです。犬・猫・小動物・鳥・爬虫類など、あらゆるペットの飼育相談・健康・しつけについて気軽に情報交換できるコミュニティサイトです。
@@ -10,8 +14,8 @@
 - ✅ **スレッド機能** - 匿名でのスレッド作成・閲覧
 - ✅ **レス投稿機能** - スレッドへのレス投稿とアンカー機能
 - ✅ **検索機能** - キーワードによるスレッド検索
-- ✅ **お知らせ機能** - microCMSによる管理者からのお知らせ
-- 🚧 **画像アップロード** - 最大3枚までの画像投稿（準備中）
+- ✅ **お知らせ機能** - microCMS による管理者からのお知らせ
+- 🚧 **画像アップロード** - 最大 3 枚までの画像投稿（準備中）
 
 ### Phase 2（予定）
 
@@ -68,10 +72,10 @@ MICROCMS_API_KEY=your_microcms_api_key
 
 ### 3. データベースのセットアップ
 
-Supabaseプロジェクトで以下のSQLを実行してください：
+Supabase プロジェクトで以下の SQL を実行してください：
 
-1. `supabase/schema.sql` - テーブル作成とRLSポリシー
-2. `supabase/rpc_functions.sql` - RPC関数の作成
+1. `supabase/schema.sql` - テーブル作成と RLS ポリシー
+2. `supabase/rpc_functions.sql` - RPC 関数の作成
 
 ### 4. 開発サーバーの起動
 
@@ -92,8 +96,8 @@ npm run dev
 ### セキュリティ
 
 - **Row Level Security (RLS)** によるデータ保護
-- **連続投稿制限** (同一IPから1分間に1投稿)
-- **入力値検証** (Zodによるバリデーション)
+- **連続投稿制限** (同一 IP から 1 分間に 1 投稿)
+- **入力値検証** (Zod によるバリデーション)
 
 ## 🎨 UI/UX
 
@@ -125,9 +129,9 @@ npm run deploy
 
 ## 🔒 セキュリティ対策
 
-- **CSRF対策**
-- **XSS対策**
-- **SQLインジェクション対策**
+- **CSRF 対策**
+- **XSS 対策**
+- **SQL インジェクション対策**
 - **画像アップロードバリデーション**
 
 ## 📝 投稿ルール
@@ -147,11 +151,11 @@ npm run deploy
 
 ## 📄 ライセンス
 
-このプロジェクトはMITライセンスの下で公開されています。
+このプロジェクトは MIT ライセンスの下で公開されています。
 
 ## 💬 サポート
 
-質問や問題がある場合は、GitHubのIssuesページでお知らせください。
+質問や問題がある場合は、GitHub の Issues ページでお知らせください。
 
 ---
 
