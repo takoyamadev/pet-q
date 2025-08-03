@@ -18,7 +18,6 @@ const THREADS_PER_PAGE = 20;
 export default async function PopularThreadsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const currentPage = parseInt(params.page || "1", 10);
-  const offset = (currentPage - 1) * THREADS_PER_PAGE;
 
   const threads = await getPopularThreads(undefined, THREADS_PER_PAGE);
 

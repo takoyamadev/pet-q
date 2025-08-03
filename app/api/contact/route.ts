@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
 import { CONTACT_SUBJECTS } from "@/lib/constants/contact";
 
+interface ContactRequestBody {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body: ContactRequestBody = await request.json();
     const { name, email, subject, message } = body;
 
     // バリデーション
