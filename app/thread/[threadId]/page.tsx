@@ -28,6 +28,13 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Displays a discussion thread and its responses based on the provided thread ID.
+ *
+ * Fetches the thread and associated responses, renders thread details, breadcrumb navigation, and a scroll-to-top button. If the thread does not exist, renders a 404 page.
+ *
+ * @param params - A promise resolving to an object containing the `threadId` of the thread to display
+ */
 export default async function ThreadPage({
   params,
 }: {
