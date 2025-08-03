@@ -2,17 +2,16 @@
 
 import { ResponseForm } from "@/components/response/ResponseForm";
 import { Card } from "@/components/ui/Card";
+import type { Response } from "@/types";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import { useState } from "react";
 
 interface ThreadContentProps {
   threadId: string;
-  responses: any[];
+  responses: Response[];
 }
 
 export function ThreadContent({ threadId, responses }: ThreadContentProps) {
-  const [selectedResponse, setSelectedResponse] = useState<number | null>(null);
 
   const handleResponseNumberClick = (number: number) => {
     const form = document.querySelector("textarea");
@@ -109,8 +108,6 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
         <h3 className="text-lg font-semibold mb-4">レスを投稿</h3>
         <ResponseForm
           threadId={threadId}
-          responses={responses}
-          onResponseClick={(num) => setSelectedResponse(num)}
         />
       </Card>
     </>
