@@ -1,0 +1,4 @@
+/* スクロール時のヘッダー考慮 */
+[id^="res-"] {
+  scroll-margin-top: 80px;
+}

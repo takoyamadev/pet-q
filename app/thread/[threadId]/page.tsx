@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
 import { ThreadJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import "./thread.css";
 
 export async function generateMetadata({
   params,

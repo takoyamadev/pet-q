@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import type { Response } from "@/types";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
+import { ScrollToAnchor } from "./ScrollToAnchor";
 
 interface ThreadContentProps {
   threadId: string;
@@ -27,6 +28,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
 
   return (
     <>
+      <ScrollToAnchor />
       {/* レスポンス一覧 */}
       <div className="space-y-4 mt-8">
         <h2 className="text-xl font-semibold">レス（{responses.length}件）</h2>
@@ -83,7 +85,15 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                               `res-${num}`,
                             );
                             if (element) {
-                              element.scrollIntoView({ behavior: "smooth" });
+                              // ヘッダーの高さ(64px) + 余白(16px)を考慮
+                              const headerOffset = 80;
+                              const elementPosition = element.getBoundingClientRect().top;
+                              const offsetPosition = elementPosition + window.scrollY - headerOffset;
+                              
+                              window.scrollTo({
+                                top: offsetPosition,
+                                behavior: "smooth"
+                              });
                             }
                           }}
                         >
