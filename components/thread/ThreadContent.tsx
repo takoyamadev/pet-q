@@ -12,7 +12,6 @@ interface ThreadContentProps {
 }
 
 export function ThreadContent({ threadId, responses }: ThreadContentProps) {
-
   const handleResponseNumberClick = (number: number) => {
     const form = document.querySelector("textarea");
     if (form) {
@@ -106,9 +105,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
       {/* レス投稿フォーム */}
       <Card className="mt-8">
         <h3 className="text-lg font-semibold mb-4">レスを投稿</h3>
-        <ResponseForm
-          threadId={threadId}
-        />
+        <ResponseForm threadId={threadId} />
       </Card>
     </>
   );
