@@ -51,11 +51,15 @@ export default async function PopularThreadsPage({ searchParams }: PageProps) {
               <div key={thread.id} className="relative">
                 {/* ランキング番号 */}
                 {index < 3 && (
-                  <div className={`absolute -left-8 top-4 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    index === 0 ? "bg-yellow-500 text-yellow-900" :
-                    index === 1 ? "bg-gray-400 text-gray-900" :
-                    "bg-orange-600 text-orange-100"
-                  }`}>
+                  <div
+                    className={`absolute -left-8 top-4 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      index === 0
+                        ? "bg-yellow-500 text-yellow-900"
+                        : index === 1
+                          ? "bg-gray-400 text-gray-900"
+                          : "bg-orange-600 text-orange-100"
+                    }`}
+                  >
                     {index + 1}
                   </div>
                 )}
@@ -73,10 +77,8 @@ export default async function PopularThreadsPage({ searchParams }: PageProps) {
               <ChevronLeft size={16} />
               前のページ
             </button>
-            
-            <span className="px-4 py-2 text-sm">
-              {currentPage}ページ目
-            </span>
+
+            <span className="px-4 py-2 text-sm">{currentPage}ページ目</span>
 
             <button
               disabled={threads.length < THREADS_PER_PAGE}

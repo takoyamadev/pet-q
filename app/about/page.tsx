@@ -1,17 +1,25 @@
-import { Heart, Users, MessageCircle, Shield, Sparkles, Target } from "lucide-react";
+import {
+  Heart,
+  Users,
+  MessageCircle,
+  Shield,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
 
 export const metadata = {
   title: "PetQについて | PetQ（ペットキュー）",
-  description: "PetQ（ペットキュー）は、ペット飼育者同士が気軽に情報交換できる匿名掲示板サービスです",
+  description:
+    "PetQ（ペットキュー）は、ペット飼育者同士が気軽に情報交換できる匿名掲示板サービスです",
 };
 
 export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8">PetQについて</h1>
-      
+
       <div className="space-y-8">
         {/* サービス概要 */}
         <section className="space-y-4">
@@ -37,7 +45,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </Card>
-            
+
             <Card className="p-6">
               <div className="flex items-start gap-4">
                 <Users className="w-8 h-8 text-primary flex-shrink-0" />
@@ -49,7 +57,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </Card>
-            
+
             <Card className="p-6">
               <div className="flex items-start gap-4">
                 <MessageCircle className="w-8 h-8 text-primary flex-shrink-0" />
@@ -61,7 +69,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </Card>
-            
+
             <Card className="p-6">
               <div className="flex items-start gap-4">
                 <Sparkles className="w-8 h-8 text-primary flex-shrink-0" />
@@ -100,13 +108,17 @@ export default function AboutPage() {
             <Card className="p-4">
               <div className="flex items-center gap-3">
                 <Target className="w-5 h-5 text-primary flex-shrink-0" />
-                <p className="text-sm">ペットの健康や行動について気になることがある時</p>
+                <p className="text-sm">
+                  ペットの健康や行動について気になることがある時
+                </p>
               </div>
             </Card>
             <Card className="p-4">
               <div className="flex items-center gap-3">
                 <Target className="w-5 h-5 text-primary flex-shrink-0" />
-                <p className="text-sm">おすすめのペット用品やフードを知りたい時</p>
+                <p className="text-sm">
+                  おすすめのペット用品やフードを知りたい時
+                </p>
               </div>
             </Card>
             <Card className="p-4">
@@ -118,7 +130,9 @@ export default function AboutPage() {
             <Card className="p-4">
               <div className="flex items-center gap-3">
                 <Target className="w-5 h-5 text-primary flex-shrink-0" />
-                <p className="text-sm">同じペットを飼っている仲間と交流したい時</p>
+                <p className="text-sm">
+                  同じペットを飼っている仲間と交流したい時
+                </p>
               </div>
             </Card>
             <Card className="p-4">
@@ -149,7 +163,9 @@ export default function AboutPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary">•</span>
-                <span>スマートフォン、タブレット、PCなど様々なデバイスに対応</span>
+                <span>
+                  スマートフォン、タブレット、PCなど様々なデバイスに対応
+                </span>
               </li>
             </ul>
           </Card>

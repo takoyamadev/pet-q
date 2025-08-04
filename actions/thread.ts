@@ -20,15 +20,16 @@ export async function createThread(input: CreateThreadInput) {
       headersList.get("x-forwarded-for") ||
       headersList.get("x-real-ip") ||
       null;
-    
+
     // レートリミットチェック
     const identifier = userIp || "anonymous";
     const { success } = await checkRateLimit(`thread:${identifier}`);
-    
+
     if (!success) {
       return {
         success: false,
-        error: "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。",
+        error:
+          "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。",
       };
     }
 

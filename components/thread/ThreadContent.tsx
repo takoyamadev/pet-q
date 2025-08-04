@@ -52,7 +52,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                     {format(
                       new Date(response.created_at),
                       "yyyy/MM/dd HH:mm:ss",
-                      { locale: ja }
+                      { locale: ja },
                     )}
                   </span>
                 </div>
@@ -80,7 +80,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                           onClick={(e) => {
                             e.preventDefault();
                             const element = document.getElementById(
-                              `res-${num}`
+                              `res-${num}`,
                             );
                             if (element) {
                               element.scrollIntoView({ behavior: "smooth" });

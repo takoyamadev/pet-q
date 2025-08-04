@@ -23,10 +23,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function ResponseForm({
-  threadId,
-  onSuccess,
-}: ResponseFormProps) {
+export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -29,9 +29,8 @@ export async function POST(request: Request) {
       headersList.get("x-real-ip") ||
       "anonymous";
 
-    const { success, limit, remaining, reset } = await checkRateLimit(
-      identifier
-    );
+    const { success, limit, remaining, reset } =
+      await checkRateLimit(identifier);
 
     if (!success) {
       return NextResponse.json(
@@ -46,7 +45,7 @@ export async function POST(request: Request) {
             "X-RateLimit-Remaining": remaining.toString(),
             "X-RateLimit-Reset": new Date(reset).toISOString(),
           },
-        }
+        },
       );
     }
 
@@ -68,7 +67,7 @@ export async function POST(request: Request) {
       console.error("DISCORD_WEBHOOK_URL is not set");
       return NextResponse.json(
         { error: "サーバーエラーが発生しました" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -128,19 +127,19 @@ export async function POST(request: Request) {
       console.error("Discord webhook error:", await discordResponse.text());
       return NextResponse.json(
         { error: "送信に失敗しました" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json(
       { message: "お問い合わせを受け付けました" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Contact form error:", error);
     return NextResponse.json(
       { error: "サーバーエラーが発生しました" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

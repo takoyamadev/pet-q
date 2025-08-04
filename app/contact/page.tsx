@@ -59,8 +59,8 @@ export default function ContactPage() {
           typeof data.error === "string"
             ? data.error
             : data.error
-            ? Object.values(data.error).flat().join(", ")
-            : "送信に失敗しました";
+              ? Object.values(data.error).flat().join(", ")
+              : "送信に失敗しました";
         throw new Error(errorMessage);
       }
 
@@ -93,7 +93,7 @@ export default function ContactPage() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({

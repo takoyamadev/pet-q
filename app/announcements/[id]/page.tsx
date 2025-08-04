@@ -76,7 +76,9 @@ export default async function AnnouncementDetailPage({
 
           <div
             className="whitespace-pre-wrap"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(announcement.content) }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(announcement.content),
+            }}
           />
         </article>
       </Card>

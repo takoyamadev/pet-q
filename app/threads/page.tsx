@@ -54,10 +54,8 @@ export default async function ThreadsPage({ searchParams }: PageProps) {
               <ChevronLeft size={16} />
               前のページ
             </button>
-            
-            <span className="px-4 py-2 text-sm">
-              {currentPage}ページ目
-            </span>
+
+            <span className="px-4 py-2 text-sm">{currentPage}ページ目</span>
 
             <button
               disabled={threads.length < THREADS_PER_PAGE}
