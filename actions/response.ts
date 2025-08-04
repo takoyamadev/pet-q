@@ -7,7 +7,6 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { createResponseSchema, type CreateResponseInput } from "@/types/actions";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { z } from "zod";
 
 // レスポンス作成アクション
 export async function createResponse(input: CreateResponseInput) {

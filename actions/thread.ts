@@ -7,7 +7,6 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { createThreadSchema, type CreateThreadInput } from "@/types/actions";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { z } from "zod";
 
 // スレッド作成アクション
 export async function createThread(input: CreateThreadInput) {
