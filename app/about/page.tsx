@@ -1,5 +1,6 @@
 import { Heart, Users, MessageCircle, Shield, Sparkles, Target } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import Link from "next/link";
 
 export const metadata = {
   title: "PetQについて | PetQ（ペットキュー）",
@@ -159,12 +160,12 @@ export default function AboutPage() {
           <p className="text-lg text-muted-foreground mb-6">
             さあ、PetQでペット仲間と繋がりましょう！
           </p>
-          <a
+          <Link
             href="/"
             className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
           >
             トップページへ戻る
-          </a>
+          </Link>
         </section>
       </div>
     </div>

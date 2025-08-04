@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 
 export async function generateMetadata({
   params,
@@ -75,7 +76,7 @@ export default async function AnnouncementDetailPage({
 
           <div
             className="whitespace-pre-wrap"
-            dangerouslySetInnerHTML={{ __html: announcement.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(announcement.content) }}
           />
         </article>
       </Card>

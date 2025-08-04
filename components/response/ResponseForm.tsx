@@ -12,8 +12,6 @@ import { z } from "zod";
 interface ResponseFormProps {
   threadId: string;
   onSuccess?: () => void;
-  responses?: any[];
-  onResponseClick?: (number: number) => void;
 }
 
 const schema = z.object({
@@ -28,8 +26,6 @@ type FormData = z.infer<typeof schema>;
 export function ResponseForm({
   threadId,
   onSuccess,
-  responses = [],
-  onResponseClick,
 }: ResponseFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,7 +35,6 @@ export function ResponseForm({
     handleSubmit,
     watch,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
