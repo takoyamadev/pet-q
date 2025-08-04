@@ -7,6 +7,7 @@ import { ScrollToTopButton } from "@/components/ui/ScrollToTopButton";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
+import { ThreadJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata({
   params,
@@ -18,13 +19,32 @@ export async function generateMetadata({
 
   if (!thread) {
     return {
-      title: "スレッドが見つかりません | PetQ（ペットキュー）",
+      title: "スレッドが見つかりません",
+      description: "お探しのスレッドは見つかりませんでした。",
     };
   }
 
+  const description = thread.content.length > 160 
+    ? thread.content.slice(0, 157) + "..." 
+    : thread.content;
+
   return {
-    title: `${thread.title} | PetQ（ペットキュー）`,
-    description: thread.content.slice(0, 160),
+    title: thread.title,
+    description,
+    openGraph: {
+      title: thread.title,
+      description,
+      type: "article",
+      publishedTime: thread.created_at,
+      modifiedTime: thread.updated_at || thread.created_at,
+      section: thread.category_name || "ペット相談",
+      tags: [thread.category_name || "ペット", thread.sub_category_name || "相談"].filter(Boolean),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: thread.title,
+      description,
+    },
   };
 }
 
@@ -49,14 +69,23 @@ export default async function ThreadPage({
 
   const responses = await getResponsesByThreadId(threadId);
 
+  const breadcrumbItems = [
+    { name: "トップ", url: "/" },
+    { name: "スレッド一覧", url: "/threads" },
+    { name: thread.title },
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* パンくず */}
-      <div className="mb-4 flex items-center gap-2 text-sm">
-        <Link href="/" className="text-muted-foreground hover:text-primary">
-          トップ
-        </Link>
-        <span className="text-muted-foreground">/</span>
+    <>
+      <ThreadJsonLd thread={thread} responses={responses} />
+      <BreadcrumbJsonLd items={breadcrumbItems} />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* パンくず */}
+        <div className="mb-4 flex items-center gap-2 text-sm">
+          <Link href="/" className="text-muted-foreground hover:text-primary">
+            トップ
+          </Link>
+          <span className="text-muted-foreground">/</span>
         <Link
           href={`/category/${thread.category_id}`}
           className="text-muted-foreground hover:text-primary"
@@ -107,8 +136,9 @@ export default async function ThreadPage({
       {/* スレッド内容とレス */}
       <ThreadContent threadId={threadId} responses={responses} />
 
-      {/* 画面上まで戻るボタン */}
-      <ScrollToTopButton />
-    </div>
+        {/* 画面上まで戻るボタン */}
+        <ScrollToTopButton />
+      </div>
+    </>
   );
 }

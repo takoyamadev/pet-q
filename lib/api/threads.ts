@@ -5,6 +5,7 @@ import type { Thread } from "@/types";
 interface ThreadWithCategory extends Thread {
   category_name?: string;
   sub_category_name?: string;
+  view_count?: number;
 }
 
 // スレッド一覧取得
