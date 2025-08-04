@@ -1,15 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 
 // 動的レンダリングを強制
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 3600; // 1時間キャッシュ
 
 const THREADS_PER_SITEMAP = 1000;
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
   const supabase = await createClient();
-  
+
   // スレッドの総数を取得
   const { count, error } = await supabase
     .from("threads")
@@ -30,16 +31,19 @@ export async function GET() {
     <loc>${baseUrl}/sitemap.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
-${Array.from({ length: totalPages }, (_, i) => `  <sitemap>
+${Array.from(
+  { length: totalPages },
+  (_, i) => `  <sitemap>
     <loc>${baseUrl}/sitemap-threads-${i + 1}.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
-  </sitemap>`).join('\n')}
+  </sitemap>`,
+).join("\n")}
 </sitemapindex>`;
 
   return new Response(xml, {
     headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      "Content-Type": "application/xml",
+      "Cache-Control": "public, max-age=3600, s-maxage=3600",
     },
   });
 }

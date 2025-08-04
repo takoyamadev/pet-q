@@ -1,7 +1,5 @@
-import { ImageResponse } from "next/og";
 import { getThreadById } from "@/lib/api/threads";
-
-export const runtime = "edge";
+import { ImageResponse } from "next/og";
 
 export const alt = "PetQ スレッド";
 export const size = {
@@ -17,7 +15,7 @@ export default async function Image({
 }) {
   const { threadId } = await params;
   const thread = await getThreadById(threadId);
-  
+
   if (!thread) {
     return new ImageResponse(
       (
@@ -34,23 +32,27 @@ export default async function Image({
             color: "white",
           }}
         >
-          <div style={{ fontSize: 80, fontWeight: "bold", marginBottom: 20 }}>PetQ</div>
+          <div style={{ fontSize: 80, fontWeight: "bold", marginBottom: 20 }}>
+            PetQ
+          </div>
           <div style={{ fontSize: 32 }}>スレッドが見つかりません</div>
         </div>
       ),
       {
         ...size,
-      }
+      },
     );
   }
 
-  const title = thread.title.length > 50 
-    ? thread.title.substring(0, 47) + "..." 
-    : thread.title;
-    
-  const content = thread.content.length > 120 
-    ? thread.content.substring(0, 117) + "..." 
-    : thread.content;
+  const title =
+    thread.title.length > 50
+      ? thread.title.substring(0, 47) + "..."
+      : thread.title;
+
+  const content =
+    thread.content.length > 120
+      ? thread.content.substring(0, 117) + "..."
+      : thread.content;
 
   return new ImageResponse(
     (
@@ -95,48 +97,56 @@ export default async function Image({
           </svg>
           <div style={{ fontSize: 50, fontWeight: "bold" }}>PetQ</div>
         </div>
-        
-        <div style={{ 
-          fontSize: 40, 
-          fontWeight: "bold", 
-          marginBottom: 20,
-          lineHeight: 1.3,
-        }}>
+
+        <div
+          style={{
+            fontSize: 40,
+            fontWeight: "bold",
+            marginBottom: 20,
+            lineHeight: 1.3,
+          }}
+        >
           {title}
         </div>
-        
-        <div style={{ 
-          fontSize: 24, 
-          opacity: 0.9,
-          lineHeight: 1.5,
-          marginBottom: 30,
-        }}>
+
+        <div
+          style={{
+            fontSize: 24,
+            opacity: 0.9,
+            lineHeight: 1.5,
+            marginBottom: 30,
+          }}
+        >
           {content}
         </div>
-        
-        <div style={{ 
-          display: "flex",
-          gap: 30,
-          fontSize: 20,
-          opacity: 0.8,
-        }}>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 30,
+            fontSize: 20,
+            opacity: 0.8,
+          }}
+        >
           <div>💬 {thread.response_count || 0} レス</div>
           <div>👁 {thread.view_count || 0} ビュー</div>
         </div>
-        
-        <div style={{
-          position: "absolute",
-          bottom: 40,
-          right: 60,
-          fontSize: 20,
-          opacity: 0.7,
-        }}>
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 40,
+            right: 60,
+            fontSize: 20,
+            opacity: 0.7,
+          }}
+        >
           pet-q.tkym-dev.workers.dev
         </div>
       </div>
     ),
     {
       ...size,
-    }
+    },
   );
 }

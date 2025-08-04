@@ -22,7 +22,8 @@ export function WebSiteJsonLd() {
     "@type": "WebSite",
     name: "PetQ（ペットキュー）",
     alternateName: "PetQ",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
+    url:
+      process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
     description: "ペット飼育者同士が気軽に情報交換できる匿名掲示板",
     potentialAction: {
       "@type": "SearchAction",
@@ -59,18 +60,26 @@ export function ThreadJsonLd({
   thread: Thread;
   responses: Response[];
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
-  
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
+
   const data = {
     "@context": "https://schema.org",
     "@type": "DiscussionForumPosting",
     headline: thread.title,
     text: thread.content,
     url: `${baseUrl}/thread/${thread.id}`,
-    datePublished: typeof thread.created_at === 'string' ? thread.created_at : thread.created_at.toISOString(),
-    dateModified: thread.updated_at 
-      ? (typeof thread.updated_at === 'string' ? thread.updated_at : thread.updated_at.toISOString())
-      : (typeof thread.created_at === 'string' ? thread.created_at : thread.created_at.toISOString()),
+    datePublished:
+      typeof thread.created_at === "string"
+        ? thread.created_at
+        : thread.created_at.toISOString(),
+    dateModified: thread.updated_at
+      ? typeof thread.updated_at === "string"
+        ? thread.updated_at
+        : thread.updated_at.toISOString()
+      : typeof thread.created_at === "string"
+        ? thread.created_at
+        : thread.created_at.toISOString(),
     author: {
       "@type": "Person",
       name: "匿名ユーザー",
@@ -90,7 +99,10 @@ export function ThreadJsonLd({
     comment: responses.map((response) => ({
       "@type": "Comment",
       text: response.content,
-      datePublished: typeof response.created_at === 'string' ? response.created_at : response.created_at.toISOString(),
+      datePublished:
+        typeof response.created_at === "string"
+          ? response.created_at
+          : response.created_at.toISOString(),
       author: {
         "@type": "Person",
         name: "匿名ユーザー",
@@ -106,8 +118,9 @@ export function BreadcrumbJsonLd({
 }: {
   items: Array<{ name: string; url?: string }>;
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
-  
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
+
   const data = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

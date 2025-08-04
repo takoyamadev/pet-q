@@ -16,14 +16,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
+  ),
   title: {
     default: "PetQ（ペットキュー）- ペット飼育者のための匿名掲示板",
     template: "%s | PetQ（ペットキュー）",
   },
   description:
     "ペット飼育者同士が気軽に情報交換できる匿名掲示板。犬・猫・小動物・鳥・爬虫類など、あらゆるペットの飼育相談・健康・しつけ・雑談ができるコミュニティサイトです。",
-  keywords: ["ペット", "掲示板", "犬", "猫", "小動物", "鳥", "爬虫類", "飼育相談", "ペット健康", "しつけ", "匿名相談", "ペットコミュニティ"],
+  keywords: [
+    "ペット",
+    "掲示板",
+    "犬",
+    "猫",
+    "小動物",
+    "鳥",
+    "爬虫類",
+    "飼育相談",
+    "ペット健康",
+    "しつけ",
+    "匿名相談",
+    "ペットコミュニティ",
+  ],
   authors: [{ name: "PetQ Team" }],
   creator: "PetQ",
   publisher: "PetQ",
@@ -34,8 +49,10 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "PetQ（ペットキュー）- ペット飼育者のための匿名掲示板",
-    description: "ペット飼育者同士が気軽に情報交換できる匿名掲示板。飼育相談・健康・しつけなど、ペットに関する悩みを共有しましょう。",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
+    description:
+      "ペット飼育者同士が気軽に情報交換できる匿名掲示板。飼育相談・健康・しつけなど、ペットに関する悩みを共有しましょう。",
+    url:
+      process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
     siteName: "PetQ",
     locale: "ja_JP",
     type: "website",
@@ -67,7 +84,8 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
+    canonical:
+      process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev",
   },
 };
 

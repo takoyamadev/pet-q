@@ -87,12 +87,14 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                             if (element) {
                               // ヘッダーの高さ(64px) + 余白(16px)を考慮
                               const headerOffset = 80;
-                              const elementPosition = element.getBoundingClientRect().top;
-                              const offsetPosition = elementPosition + window.scrollY - headerOffset;
-                              
+                              const elementPosition =
+                                element.getBoundingClientRect().top;
+                              const offsetPosition =
+                                elementPosition + window.scrollY - headerOffset;
+
                               window.scrollTo({
                                 top: offsetPosition,
-                                behavior: "smooth"
+                                behavior: "smooth",
                               });
                             }
                           }}

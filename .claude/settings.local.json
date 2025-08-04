@@ -13,7 +13,9 @@
       "Bash(cp:*)",
       "Bash(rm:*)",
       "Bash(timeout 30 npm run dev)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:opennext.js.org)"
     ],
     "deny": []
   }

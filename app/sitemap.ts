@@ -3,12 +3,13 @@ import { getCategories } from "@/lib/api/categories";
 import { getLatestThreads } from "@/lib/api/threads";
 
 // 動的レンダリングを強制
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 3600; // 1時間キャッシュ
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
-  
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://pet-q.tkym-dev.workers.dev";
+
   // 静的ページ
   const staticPages = [
     {
@@ -69,7 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // カテゴリーページ
   const categories = await getCategories();
-  const categoryPages = categories.map(category => ({
+  const categoryPages = categories.map((category) => ({
     url: `${baseUrl}/category/${category.id}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
@@ -78,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 最新のスレッド（最新20件のみ、頻繁に更新されるもの）
   const threads = await getLatestThreads(20);
-  const threadPages = threads.map(thread => ({
+  const threadPages = threads.map((thread) => ({
     url: `${baseUrl}/thread/${thread.id}`,
     lastModified: new Date(thread.updated_at || thread.created_at),
     changeFrequency: "daily" as const,

@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export const alt = "PetQ - ペット飼育者のための匿名相談コミュニティ";
 export const size = {
   width: 1200,
@@ -55,7 +53,14 @@ export default async function Image() {
           <div style={{ fontSize: 80, fontWeight: "bold" }}>PetQ</div>
         </div>
         <div style={{ fontSize: 32, marginBottom: 10 }}>ペットキュー</div>
-        <div style={{ fontSize: 24, opacity: 0.9, textAlign: "center", maxWidth: 800 }}>
+        <div
+          style={{
+            fontSize: 24,
+            opacity: 0.9,
+            textAlign: "center",
+            maxWidth: 800,
+          }}
+        >
           ペット飼育者のための匿名相談コミュニティ
         </div>
         <div style={{ fontSize: 20, opacity: 0.8, marginTop: 20 }}>
@@ -65,6 +70,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    }
+    },
   );
 }
