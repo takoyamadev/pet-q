@@ -45,25 +45,45 @@ export default async function ThreadsPage({ searchParams }: PageProps) {
         <>
           <ThreadList threads={threads} />
 
-          {/* ページネーション（今後実装予定） */}
+          {/* ページネーション */}
           <div className="mt-8 flex justify-center items-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-border bg-background hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronLeft size={16} />
-              前のページ
-            </button>
+            {currentPage > 1 ? (
+              <Link
+                href={`/threads?page=${currentPage - 1}`}
+                className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-border bg-background hover:bg-muted transition-colors"
+              >
+                <ChevronLeft size={16} />
+                前のページ
+              </Link>
+            ) : (
+              <button
+                disabled
+                className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-border bg-background opacity-50 cursor-not-allowed"
+              >
+                <ChevronLeft size={16} />
+                前のページ
+              </button>
+            )}
 
             <span className="px-4 py-2 text-sm">{currentPage}ページ目</span>
 
-            <button
-              disabled={threads.length < THREADS_PER_PAGE}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-border bg-background hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              次のページ
-              <ChevronRight size={16} />
-            </button>
+            {threads.length >= THREADS_PER_PAGE ? (
+              <Link
+                href={`/threads?page=${currentPage + 1}`}
+                className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-border bg-background hover:bg-muted transition-colors"
+              >
+                次のページ
+                <ChevronRight size={16} />
+              </Link>
+            ) : (
+              <button
+                disabled
+                className="flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg border border-border bg-background opacity-50 cursor-not-allowed"
+              >
+                次のページ
+                <ChevronRight size={16} />
+              </button>
+            )}
           </div>
         </>
       ) : (

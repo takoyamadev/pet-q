@@ -1,6 +1,4 @@
 import { CONTACT_SUBJECTS } from "@/lib/constants/contact";
-import { checkRateLimit } from "@/lib/rate-limit";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -22,33 +20,6 @@ const contactSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    // レートリミットチェック
-    const headersList = await headers();
-    const identifier =
-      headersList.get("x-forwarded-for") ||
-      headersList.get("x-real-ip") ||
-      "anonymous";
-
-    const { success, limit, remaining, reset } =
-      await checkRateLimit(identifier);
-
-    if (!success) {
-      return NextResponse.json(
-        {
-          error:
-            "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。",
-        },
-        {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": limit.toString(),
-            "X-RateLimit-Remaining": remaining.toString(),
-            "X-RateLimit-Reset": new Date(reset).toISOString(),
-          },
-        },
-      );
-    }
-
     const body = await request.json();
 
     // Zodでバリデーション

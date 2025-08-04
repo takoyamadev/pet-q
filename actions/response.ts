@@ -9,7 +9,6 @@ import {
   createResponseSchema,
   type CreateResponseInput,
 } from "@/types/actions";
-import { checkRateLimit } from "@/lib/rate-limit";
 
 // レスポンス作成アクション
 export async function createResponse(input: CreateResponseInput) {
@@ -23,18 +22,6 @@ export async function createResponse(input: CreateResponseInput) {
       headersList.get("x-forwarded-for") ||
       headersList.get("x-real-ip") ||
       null;
-
-    // レートリミットチェック
-    const identifier = userIp || "anonymous";
-    const { success } = await checkRateLimit(`response:${identifier}`);
-
-    if (!success) {
-      return {
-        success: false,
-        error:
-          "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。",
-      };
-    }
 
     // Supabaseクライアント作成
     const supabase = await createClient();
