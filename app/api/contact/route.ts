@@ -1,18 +1,63 @@
 import { NextResponse } from "next/server";
 import { CONTACT_SUBJECTS } from "@/lib/constants/contact";
+import { z } from "zod";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { headers } from "next/headers";
+
+// バリデーションスキーマ
+const contactSchema = z.object({
+  name: z.string().max(100, "名前は100文字以内で入力してください").optional(),
+  email: z
+    .string()
+    .email("有効なメールアドレスを入力してください")
+    .max(255, "メールアドレスは255文字以内で入力してください")
+    .optional()
+    .or(z.literal("")),
+  subject: z.string().optional(),
+  message: z
+    .string()
+    .min(1, "本文は必須です")
+    .max(5000, "本文は5000文字以内で入力してください"),
+});
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { name, email, subject, message } = body;
-
-    // バリデーション
-    if (!message?.trim()) {
+    // レートリミットチェック
+    const headersList = await headers();
+    const identifier = headersList.get("x-forwarded-for") || 
+                      headersList.get("x-real-ip") || 
+                      "anonymous";
+    
+    const { success, limit, remaining, reset } = await checkRateLimit(identifier);
+    
+    if (!success) {
       return NextResponse.json(
-        { error: "本文は必須です" },
+        { error: "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。" },
+        { 
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": new Date(reset).toISOString(),
+          },
+        }
+      );
+    }
+    
+    const body = await request.json();
+    
+    // Zodでバリデーション
+    const validationResult = contactSchema.safeParse(body);
+    
+    if (!validationResult.success) {
+      const errors = validationResult.error.flatten();
+      return NextResponse.json(
+        { error: errors.fieldErrors },
         { status: 400 }
       );
     }
+    
+    const { name, email, subject, message } = validationResult.data;
 
     // Discord Webhook URLの確認
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;

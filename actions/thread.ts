@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { createThreadSchema, type CreateThreadInput } from "@/types/actions";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { z } from "zod";
 
 // スレッド作成アクション
 export async function createThread(input: CreateThreadInput) {
@@ -18,6 +20,17 @@ export async function createThread(input: CreateThreadInput) {
       headersList.get("x-forwarded-for") ||
       headersList.get("x-real-ip") ||
       null;
+    
+    // レートリミットチェック
+    const identifier = userIp || "anonymous";
+    const { success } = await checkRateLimit(`thread:${identifier}`);
+    
+    if (!success) {
+      return {
+        success: false,
+        error: "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。",
+      };
+    }
 
     // Supabaseクライアント作成
     const supabase = await createClient();

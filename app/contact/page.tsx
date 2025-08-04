@@ -49,10 +49,15 @@ export default function ContactPage() {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { error?: string | Record<string, string[]>, message?: string };
 
       if (!response.ok) {
-        throw new Error(data.error || "送信に失敗しました");
+        const errorMessage = typeof data.error === 'string' 
+          ? data.error 
+          : data.error 
+            ? Object.values(data.error).flat().join(', ')
+            : "送信に失敗しました";
+        throw new Error(errorMessage);
       }
 
       // 成功時の処理
