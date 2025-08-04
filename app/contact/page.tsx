@@ -49,13 +49,17 @@ export default function ContactPage() {
         }),
       });
 
-      const data = await response.json() as { error?: string | Record<string, string[]>, message?: string };
+      const data = (await response.json()) as {
+        error?: string | Record<string, string[]>;
+        message?: string;
+      };
 
       if (!response.ok) {
-        const errorMessage = typeof data.error === 'string' 
-          ? data.error 
-          : data.error 
-            ? Object.values(data.error).flat().join(', ')
+        const errorMessage =
+          typeof data.error === "string"
+            ? data.error
+            : data.error
+            ? Object.values(data.error).flat().join(", ")
             : "送信に失敗しました";
         throw new Error(errorMessage);
       }

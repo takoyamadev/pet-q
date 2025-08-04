@@ -4,6 +4,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { z } from "zod";
 import { createThreadSchema, type CreateThreadInput } from "@/types/actions";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";

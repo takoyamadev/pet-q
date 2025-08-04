@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
 import { CONTACT_SUBJECTS } from "@/lib/constants/contact";
-import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
 // バリデーションスキーマ
 const contactSchema = z.object({
@@ -20,20 +20,33 @@ const contactSchema = z.object({
     .max(5000, "本文は5000文字以内で入力してください"),
 });
 
+interface ContactRequestBody {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
 export async function POST(request: Request) {
   try {
     // レートリミットチェック
     const headersList = await headers();
-    const identifier = headersList.get("x-forwarded-for") || 
-                      headersList.get("x-real-ip") || 
-                      "anonymous";
-    
-    const { success, limit, remaining, reset } = await checkRateLimit(identifier);
-    
+    const identifier =
+      headersList.get("x-forwarded-for") ||
+      headersList.get("x-real-ip") ||
+      "anonymous";
+
+    const { success, limit, remaining, reset } = await checkRateLimit(
+      identifier
+    );
+
     if (!success) {
       return NextResponse.json(
-        { error: "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。" },
-        { 
+        {
+          error:
+            "リクエスト数が制限を超えました。しばらく待ってから再度お試しください。",
+        },
+        {
           status: 429,
           headers: {
             "X-RateLimit-Limit": limit.toString(),
@@ -43,20 +56,17 @@ export async function POST(request: Request) {
         }
       );
     }
-    
+
     const body = await request.json();
-    
+
     // Zodでバリデーション
     const validationResult = contactSchema.safeParse(body);
-    
+
     if (!validationResult.success) {
       const errors = validationResult.error.flatten();
-      return NextResponse.json(
-        { error: errors.fieldErrors },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: errors.fieldErrors }, { status: 400 });
     }
-    
+
     const { name, email, subject, message } = validationResult.data;
 
     // Discord Webhook URLの確認
@@ -70,9 +80,8 @@ export async function POST(request: Request) {
     }
 
     // 件名のラベルを取得
-    const subjectLabel = CONTACT_SUBJECTS.find(
-      (s) => s.value === subject
-    )?.label || "不明";
+    const subjectLabel =
+      CONTACT_SUBJECTS.find((s) => s.value === subject)?.label || "不明";
 
     // Discord用のメッセージを作成
     const discordMessage = {
@@ -98,7 +107,10 @@ export async function POST(request: Request) {
             },
             {
               name: "💬 本文",
-              value: message.length > 1024 ? message.substring(0, 1021) + "..." : message,
+              value:
+                message.length > 1024
+                  ? message.substring(0, 1021) + "..."
+                  : message,
               inline: false,
             },
           ],

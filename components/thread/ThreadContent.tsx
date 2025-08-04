@@ -2,9 +2,9 @@
 
 import { ResponseForm } from "@/components/response/ResponseForm";
 import { Card } from "@/components/ui/Card";
+import type { Response } from "@/types";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import type { Response } from "@/types";
 
 interface ThreadContentProps {
   threadId: string;
@@ -12,7 +12,6 @@ interface ThreadContentProps {
 }
 
 export function ThreadContent({ threadId, responses }: ThreadContentProps) {
-
   const handleResponseNumberClick = (number: number) => {
     const form = document.querySelector("textarea");
     if (form) {
@@ -106,9 +105,7 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
       {/* レス投稿フォーム */}
       <Card className="mt-8">
         <h3 className="text-lg font-semibold mb-4">レスを投稿</h3>
-        <ResponseForm
-          threadId={threadId}
-        />
+        <ResponseForm threadId={threadId} />
       </Card>
     </>
   );
