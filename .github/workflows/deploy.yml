@@ -1,0 +1,45 @@
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [main, master]
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build with OpenNext
+        run: npx opennextjs-cloudflare build
+
+      - name: Deploy to Cloudflare Workers
+        run: npx opennextjs-cloudflare deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Set Cloudflare Environment Variables
+        run: |
+          npx wrangler secret put DISCORD_WEBHOOK_URL <<< "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          npx wrangler secret put NEXT_PUBLIC_SUPABASE_URL <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+          npx wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+          npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+          npx wrangler secret put MICROCMS_SERVICE_DOMAIN <<< "${{ secrets.MICROCMS_SERVICE_DOMAIN }}"
+          npx wrangler secret put MICROCMS_API_KEY <<< "${{ secrets.MICROCMS_API_KEY }}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        continue-on-error: true
