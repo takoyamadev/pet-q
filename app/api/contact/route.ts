@@ -20,13 +20,6 @@ const contactSchema = z.object({
     .max(5000, "本文は5000文字以内で入力してください"),
 });
 
-interface ContactRequestBody {
-  name?: string;
-  email?: string;
-  subject?: string;
-  message?: string;
-}
-
 export async function POST(request: Request) {
   try {
     // レートリミットチェック
