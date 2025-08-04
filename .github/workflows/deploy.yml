@@ -24,6 +24,13 @@ jobs:
 
       - name: Build with OpenNext
         run: npx opennextjs-cloudflare build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Deploy to Cloudflare Workers
         run: npx opennextjs-cloudflare deploy
@@ -35,8 +42,8 @@ jobs:
         run: |
           npx wrangler secret put DISCORD_WEBHOOK_URL <<< "${{ secrets.DISCORD_WEBHOOK_URL }}"
           npx wrangler secret put NEXT_PUBLIC_SUPABASE_URL <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
-          npx wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
-          npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+          npx wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY <<< "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
+          npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY <<< "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
           npx wrangler secret put MICROCMS_SERVICE_DOMAIN <<< "${{ secrets.MICROCMS_SERVICE_DOMAIN }}"
           npx wrangler secret put MICROCMS_API_KEY <<< "${{ secrets.MICROCMS_API_KEY }}"
         env:
