@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     title: "PetQ（ペットキュー）- ペット飼育者のための匿名掲示板",
     description: "ペット飼育者同士が気軽に情報交換できる匿名掲示板。",
     creator: "@petq",
-    images: ["/og/petq-twitter.png"],
+    images: ["/og/petq-og.png"],
   },
   robots: {
     index: true,

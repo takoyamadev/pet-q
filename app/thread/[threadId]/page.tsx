@@ -44,11 +44,20 @@ export async function generateMetadata({
         thread.category_name || "ペット",
         thread.sub_category_name || "相談",
       ].filter(Boolean),
+      images: [
+        {
+          url: "/og/petq-og.png",
+          width: 1200,
+          height: 630,
+          alt: "PetQ - ペット飼育者のための匿名相談コミュニティ",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: thread.title,
       description,
+      images: ["/og/petq-og.png"],
     },
   };
 }
