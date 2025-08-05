@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og/petq-og.png",
         width: 1200,
         height: 630,
         alt: "PetQ - ペット飼育者のための匿名相談コミュニティ",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     title: "PetQ（ペットキュー）- ペット飼育者のための匿名掲示板",
     description: "ペット飼育者同士が気軽に情報交換できる匿名掲示板。",
     creator: "@petq",
-    images: ["/twitter-image"],
+    images: ["/og/petq-twitter.png"],
   },
   robots: {
     index: true,
