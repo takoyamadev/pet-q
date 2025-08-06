@@ -2,6 +2,7 @@
 
 import { ResponseForm } from "@/components/response/ResponseForm";
 import { Card } from "@/components/ui/Card";
+import { ImageGallery } from "@/components/ui/ImageGallery";
 import type { Response } from "@/types";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
@@ -107,7 +108,10 @@ export function ThreadContent({ threadId, responses }: ThreadContentProps) {
                   })}
                 </div>
 
-                {/* 画像表示（TODO: 実装） */}
+                {/* 画像表示 */}
+                {response.image_urls && response.image_urls.length > 0 && (
+                  <ImageGallery images={response.image_urls} className="mt-4" />
+                )}
               </div>
             </Card>
           ))

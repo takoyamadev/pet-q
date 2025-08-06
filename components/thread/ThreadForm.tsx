@@ -7,7 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { createThread } from "@/actions/thread";
+import { uploadImages } from "@/lib/supabase/storage";
+import { logErrorClient, extractErrorDetails } from "@/lib/logger";
+import { useToast } from "@/contexts/ToastContext";
 import type { CreateThreadInput } from "@/types/actions";
 import type { Category } from "@/types";
 
@@ -32,8 +36,10 @@ type FormData = z.infer<typeof schema>;
 
 export function ThreadForm({ categories }: ThreadFormProps) {
   const router = useRouter();
+  const { showError, showSuccess } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const {
     register,
@@ -65,15 +71,83 @@ export function ThreadForm({ categories }: ThreadFormProps) {
     setIsSubmitting(true);
 
     try {
-      const result = await createThread(data as CreateThreadInput);
+      // 画像をアップロード
+      let imageUrls: string[] = [];
+      if (selectedImages.length > 0) {
+        try {
+          imageUrls = await uploadImages(selectedImages, "threads");
+        } catch (error) {
+          const errorDetails = extractErrorDetails(error);
+          
+          // エラーログを記録
+          await logErrorClient({
+            ...errorDetails,
+            functionName: "ThreadForm.uploadImages",
+            userAction: "upload_thread_images",
+            requestData: {
+              imageCount: selectedImages.length,
+              imageSizes: selectedImages.map(img => img.size),
+              imageTypes: selectedImages.map(img => img.type),
+            },
+            severity: "error",
+          });
+
+          showError(error instanceof Error ? error.message : "画像のアップロードに失敗しました", {
+            title: "画像アップロードエラー"
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // スレッドを作成
+      const threadData: CreateThreadInput = {
+        ...data,
+        imageUrls,
+      };
+      
+      const result = await createThread(threadData);
 
       if (result.success && result.data) {
+        showSuccess("スレッドを作成しました！", {
+          title: "作成完了"
+        });
         router.push(`/thread/${result.data.id}`);
       } else {
-        alert(result.error || "スレッドの作成に失敗しました");
+        // サーバー側でエラーログは記録済みなので、クライアント側では簡単なログのみ
+        await logErrorClient({
+          errorMessage: `Thread creation failed: ${result.error}`,
+          functionName: "ThreadForm.createThread",
+          userAction: "create_thread_failed",
+          requestData: {
+            title: data.title?.substring(0, 50),
+            categoryId: data.categoryId,
+            hasImages: imageUrls.length > 0,
+          },
+          severity: "warn",
+        });
+        
+        showError(result.error || "スレッドの作成に失敗しました", {
+          title: "スレッド作成エラー"
+        });
       }
-    } catch {
-      alert("エラーが発生しました");
+    } catch (error) {
+      const errorDetails = extractErrorDetails(error);
+      
+      await logErrorClient({
+        ...errorDetails,
+        functionName: "ThreadForm.onSubmit",
+        userAction: "create_thread_exception",
+        requestData: {
+          title: data.title?.substring(0, 50),
+          hasSelectedImages: selectedImages.length > 0,
+        },
+        severity: "error",
+      });
+      
+      showError("予期しないエラーが発生しました", {
+        title: "エラー"
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -165,6 +239,22 @@ export function ThreadForm({ categories }: ThreadFormProps) {
           )}
           <p className="text-sm text-muted-foreground mt-1">
             {watch("content")?.length || 0}/2000文字
+          </p>
+        </div>
+
+        {/* 画像アップロード */}
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            画像（任意）
+          </label>
+          <ImageUploader
+            images={selectedImages}
+            onImagesChange={setSelectedImages}
+            maxImages={3}
+            disabled={isSubmitting}
+          />
+          <p className="text-xs text-muted-foreground mt-2">
+            最大3枚まで画像を添付できます
           </p>
         </div>
 
