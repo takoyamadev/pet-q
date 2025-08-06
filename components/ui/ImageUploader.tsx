@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Upload, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/contexts/ToastContext";
 
 interface ImageUploaderProps {
   images: File[];
@@ -19,6 +20,7 @@ export function ImageUploader({
 }: ImageUploaderProps) {
   const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showError, showWarning } = useToast();
 
   // 外部から画像がクリアされた場合、プレビューもクリア
   useEffect(() => {
@@ -39,14 +41,16 @@ export function ImageUploader({
     }
     
     if (images.length + files.length > maxImages) {
-      alert(`画像は最大${maxImages}枚まで投稿できます`);
+      showWarning(`画像は最大${maxImages}枚まで投稿できます`);
       return;
     }
 
     // ファイルサイズチェック
     const oversizedFiles = files.filter(file => file && file.size > 5 * 1024 * 1024);
     if (oversizedFiles.length > 0) {
-      alert("5MB以下の画像を選択してください");
+      showError("5MB以下の画像を選択してください", {
+        title: "ファイルサイズエラー"
+      });
       return;
     }
 
@@ -55,7 +59,9 @@ export function ImageUploader({
       file => file && !["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)
     );
     if (invalidFiles.length > 0) {
-      alert("対応している画像形式: JPEG, PNG, WebP, GIF");
+      showError("対応している画像形式: JPEG, PNG, WebP, GIF", {
+        title: "ファイル形式エラー"
+      });
       return;
     }
 
@@ -63,7 +69,6 @@ export function ImageUploader({
     onImagesChange(newImages);
 
     // プレビュー生成
-    const newPreviews: string[] = [];
     Promise.all(
       files.map((file) => {
         return new Promise<string>((resolve) => {

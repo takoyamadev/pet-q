@@ -11,6 +11,7 @@ import { ImageUploader } from "@/components/ui/ImageUploader";
 import { createThread } from "@/actions/thread";
 import { uploadImages } from "@/lib/supabase/storage";
 import { logErrorClient, extractErrorDetails } from "@/lib/logger";
+import { useToast } from "@/contexts/ToastContext";
 import type { CreateThreadInput } from "@/types/actions";
 import type { Category } from "@/types";
 
@@ -35,6 +36,7 @@ type FormData = z.infer<typeof schema>;
 
 export function ThreadForm({ categories }: ThreadFormProps) {
   const router = useRouter();
+  const { showError, showSuccess } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -90,7 +92,9 @@ export function ThreadForm({ categories }: ThreadFormProps) {
             severity: "error",
           });
 
-          alert(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
+          showError(error instanceof Error ? error.message : "画像のアップロードに失敗しました", {
+            title: "画像アップロードエラー"
+          });
           setIsSubmitting(false);
           return;
         }
@@ -105,6 +109,9 @@ export function ThreadForm({ categories }: ThreadFormProps) {
       const result = await createThread(threadData);
 
       if (result.success && result.data) {
+        showSuccess("スレッドを作成しました！", {
+          title: "作成完了"
+        });
         router.push(`/thread/${result.data.id}`);
       } else {
         // サーバー側でエラーログは記録済みなので、クライアント側では簡単なログのみ
@@ -120,7 +127,9 @@ export function ThreadForm({ categories }: ThreadFormProps) {
           severity: "warn",
         });
         
-        alert(result.error || "スレッドの作成に失敗しました");
+        showError(result.error || "スレッドの作成に失敗しました", {
+          title: "スレッド作成エラー"
+        });
       }
     } catch (error) {
       const errorDetails = extractErrorDetails(error);
@@ -136,7 +145,9 @@ export function ThreadForm({ categories }: ThreadFormProps) {
         severity: "error",
       });
       
-      alert("エラーが発生しました");
+      showError("予期しないエラーが発生しました", {
+        title: "エラー"
+      });
     } finally {
       setIsSubmitting(false);
     }

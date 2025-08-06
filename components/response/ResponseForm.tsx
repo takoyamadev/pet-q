@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { uploadImages } from "@/lib/supabase/storage";
 import { logErrorClient, extractErrorDetails } from "@/lib/logger";
+import { useToast } from "@/contexts/ToastContext";
 import type { CreateResponseInput } from "@/types/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -28,6 +29,7 @@ type FormData = z.infer<typeof schema>;
 
 export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
   const router = useRouter();
+  const { showError, showSuccess } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
@@ -67,7 +69,9 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
             severity: "error",
           });
 
-          alert(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
+          showError(error instanceof Error ? error.message : "画像のアップロードに失敗しました", {
+            title: "画像アップロードエラー"
+          });
           setIsSubmitting(false);
           return;
         }
@@ -83,6 +87,7 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
       const result = await createResponse(responseData);
 
       if (result.success) {
+        showSuccess("レスを投稿しました！");
         reset();
         setSelectedImages([]);
         router.refresh();
@@ -101,7 +106,9 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
           severity: "warn",
         });
         
-        alert(result.error || "レスの投稿に失敗しました");
+        showError(result.error || "レスの投稿に失敗しました", {
+          title: "レス投稿エラー"
+        });
       }
     } catch (error) {
       const errorDetails = extractErrorDetails(error);
@@ -118,7 +125,9 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
         severity: "error",
       });
       
-      alert("エラーが発生しました");
+      showError("予期しないエラーが発生しました", {
+        title: "エラー"
+      });
     } finally {
       setIsSubmitting(false);
     }

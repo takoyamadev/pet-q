@@ -77,37 +77,37 @@ export async function logErrorClient(data: ErrorLogData): Promise<boolean> {
  * エラーオブジェクトから詳細情報を抽出
  */
 export function extractErrorDetails(error: unknown): {
-  message: string;
-  stack?: string;
-  type?: string;
+  errorMessage: string;
+  errorStack?: string;
+  errorType?: string;
 } {
   if (error instanceof Error) {
     return {
-      message: error.message,
-      stack: error.stack,
-      type: error.constructor.name,
+      errorMessage: error.message,
+      errorStack: error.stack,
+      errorType: error.constructor.name,
     };
   }
 
   if (typeof error === "string") {
     return {
-      message: error,
-      type: "String",
+      errorMessage: error,
+      errorType: "String",
     };
   }
 
   if (typeof error === "object" && error !== null) {
     const obj = error as any;
     return {
-      message: obj.message || obj.error || JSON.stringify(error),
-      stack: obj.stack,
-      type: obj.name || "Object",
+      errorMessage: obj.message || obj.error || JSON.stringify(error),
+      errorStack: obj.stack,
+      errorType: obj.name || "Object",
     };
   }
 
   return {
-    message: "Unknown error",
-    type: typeof error,
+    errorMessage: "Unknown error",
+    errorType: typeof error,
   };
 }
 
