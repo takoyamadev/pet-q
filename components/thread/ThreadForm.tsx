@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { createThread } from "@/actions/thread";
 import { uploadImages } from "@/lib/supabase/storage";
+import { logErrorClient, extractErrorDetails } from "@/lib/logger";
 import type { CreateThreadInput } from "@/types/actions";
 import type { Category } from "@/types";
 
@@ -74,6 +75,21 @@ export function ThreadForm({ categories }: ThreadFormProps) {
         try {
           imageUrls = await uploadImages(selectedImages, "threads");
         } catch (error) {
+          const errorDetails = extractErrorDetails(error);
+          
+          // エラーログを記録
+          await logErrorClient({
+            ...errorDetails,
+            functionName: "ThreadForm.uploadImages",
+            userAction: "upload_thread_images",
+            requestData: {
+              imageCount: selectedImages.length,
+              imageSizes: selectedImages.map(img => img.size),
+              imageTypes: selectedImages.map(img => img.type),
+            },
+            severity: "error",
+          });
+
           alert(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
           setIsSubmitting(false);
           return;
@@ -91,9 +107,35 @@ export function ThreadForm({ categories }: ThreadFormProps) {
       if (result.success && result.data) {
         router.push(`/thread/${result.data.id}`);
       } else {
+        // サーバー側でエラーログは記録済みなので、クライアント側では簡単なログのみ
+        await logErrorClient({
+          errorMessage: `Thread creation failed: ${result.error}`,
+          functionName: "ThreadForm.createThread",
+          userAction: "create_thread_failed",
+          requestData: {
+            title: data.title?.substring(0, 50),
+            categoryId: data.categoryId,
+            hasImages: imageUrls.length > 0,
+          },
+          severity: "warn",
+        });
+        
         alert(result.error || "スレッドの作成に失敗しました");
       }
-    } catch {
+    } catch (error) {
+      const errorDetails = extractErrorDetails(error);
+      
+      await logErrorClient({
+        ...errorDetails,
+        functionName: "ThreadForm.onSubmit",
+        userAction: "create_thread_exception",
+        requestData: {
+          title: data.title?.substring(0, 50),
+          hasSelectedImages: selectedImages.length > 0,
+        },
+        severity: "error",
+      });
+      
       alert("エラーが発生しました");
     } finally {
       setIsSubmitting(false);

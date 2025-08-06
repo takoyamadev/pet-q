@@ -4,6 +4,7 @@ import { createResponse } from "@/actions/response";
 import { Button } from "@/components/ui/Button";
 import { ImageUploader } from "@/components/ui/ImageUploader";
 import { uploadImages } from "@/lib/supabase/storage";
+import { logErrorClient, extractErrorDetails } from "@/lib/logger";
 import type { CreateResponseInput } from "@/types/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -50,6 +51,22 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
         try {
           imageUrls = await uploadImages(selectedImages, "responses");
         } catch (error) {
+          const errorDetails = extractErrorDetails(error);
+          
+          // エラーログを記録
+          await logErrorClient({
+            ...errorDetails,
+            functionName: "ResponseForm.uploadImages",
+            userAction: "upload_response_images",
+            requestData: {
+              threadId,
+              imageCount: selectedImages.length,
+              imageSizes: selectedImages.map(img => img.size),
+              imageTypes: selectedImages.map(img => img.type),
+            },
+            severity: "error",
+          });
+
           alert(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
           setIsSubmitting(false);
           return;
@@ -71,9 +88,36 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
         router.refresh();
         onSuccess?.();
       } else {
+        // サーバー側でエラーログは記録済みなので、クライアント側では簡単なログのみ
+        await logErrorClient({
+          errorMessage: `Response creation failed: ${result.error}`,
+          functionName: "ResponseForm.createResponse",
+          userAction: "create_response_failed",
+          requestData: {
+            threadId,
+            hasImages: imageUrls.length > 0,
+            contentLength: data.content.length,
+          },
+          severity: "warn",
+        });
+        
         alert(result.error || "レスの投稿に失敗しました");
       }
-    } catch {
+    } catch (error) {
+      const errorDetails = extractErrorDetails(error);
+      
+      await logErrorClient({
+        ...errorDetails,
+        functionName: "ResponseForm.onSubmit",
+        userAction: "create_response_exception",
+        requestData: {
+          threadId,
+          hasSelectedImages: selectedImages.length > 0,
+          contentLength: data.content?.length || 0,
+        },
+        severity: "error",
+      });
+      
       alert("エラーが発生しました");
     } finally {
       setIsSubmitting(false);

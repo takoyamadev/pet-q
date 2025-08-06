@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { logErrorClient, extractErrorDetails } from "@/lib/logger";
 
 const BUCKET_NAME = "thread-images";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -52,6 +53,24 @@ export async function uploadImage(
 
     if (error) {
       console.error("Upload error:", error);
+      
+      // エラーログを記録
+      await logErrorClient({
+        errorMessage: `Supabase storage upload error: ${error.message}`,
+        errorStack: error.stack,
+        errorType: error.name || "StorageError",
+        functionName: "uploadImage",
+        userAction: "upload_image",
+        requestData: {
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+          folder,
+          bucketName: BUCKET_NAME,
+        },
+        severity: "error",
+      });
+
       return {
         success: false,
         error: "画像のアップロードに失敗しました",
@@ -69,6 +88,23 @@ export async function uploadImage(
     };
   } catch (error) {
     console.error("Unexpected error:", error);
+    
+    const errorDetails = extractErrorDetails(error);
+    
+    // 予期しないエラーをログに記録
+    await logErrorClient({
+      ...errorDetails,
+      functionName: "uploadImage",
+      userAction: "upload_image_exception",
+      requestData: {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        folder,
+      },
+      severity: "error",
+    });
+    
     return {
       success: false,
       error: "予期しないエラーが発生しました",
@@ -104,6 +140,20 @@ export async function uploadImages(
   });
 
   if (errors.length > 0) {
+    // 複数画像アップロードでエラーが発生した場合をログに記録
+    await logErrorClient({
+      errorMessage: `Multiple image upload errors: ${errors.join("; ")}`,
+      functionName: "uploadImages",
+      userAction: "upload_multiple_images",
+      requestData: {
+        totalFiles: files.length,
+        successCount: urls.length,
+        errorCount: errors.length,
+        folder,
+      },
+      severity: "error",
+    });
+    
     throw new Error(errors.join("\n"));
   }
 
