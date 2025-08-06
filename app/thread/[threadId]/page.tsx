@@ -4,6 +4,7 @@ import { getResponsesByThreadId } from "@/lib/api/responses";
 import { Card } from "@/components/ui/Card";
 import { ThreadContent } from "@/components/thread/ThreadContent";
 import { ScrollToTopButton } from "@/components/ui/ScrollToTopButton";
+import { ImageGallery } from "@/components/ui/ImageGallery";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
@@ -131,11 +132,9 @@ export default async function ThreadPage({
 
             <div className="whitespace-pre-wrap">{thread.content}</div>
 
-            {/* 画像表示（TODO: 実装） */}
+            {/* 画像表示 */}
             {thread.image_urls && thread.image_urls.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {/* 画像表示の実装 */}
-              </div>
+              <ImageGallery images={thread.image_urls} className="mt-4" />
             )}
 
             <div className="text-sm text-muted-foreground">

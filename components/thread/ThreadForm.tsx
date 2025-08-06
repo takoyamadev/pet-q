@@ -7,7 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { createThread } from "@/actions/thread";
+import { uploadImages } from "@/lib/supabase/storage";
 import type { CreateThreadInput } from "@/types/actions";
 import type { Category } from "@/types";
 
@@ -34,6 +36,7 @@ export function ThreadForm({ categories }: ThreadFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const {
     register,
@@ -65,7 +68,25 @@ export function ThreadForm({ categories }: ThreadFormProps) {
     setIsSubmitting(true);
 
     try {
-      const result = await createThread(data as CreateThreadInput);
+      // 画像をアップロード
+      let imageUrls: string[] = [];
+      if (selectedImages.length > 0) {
+        try {
+          imageUrls = await uploadImages(selectedImages, "threads");
+        } catch (error) {
+          alert(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // スレッドを作成
+      const threadData: CreateThreadInput = {
+        ...data,
+        imageUrls,
+      };
+      
+      const result = await createThread(threadData);
 
       if (result.success && result.data) {
         router.push(`/thread/${result.data.id}`);
@@ -165,6 +186,22 @@ export function ThreadForm({ categories }: ThreadFormProps) {
           )}
           <p className="text-sm text-muted-foreground mt-1">
             {watch("content")?.length || 0}/2000文字
+          </p>
+        </div>
+
+        {/* 画像アップロード */}
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            画像（任意）
+          </label>
+          <ImageUploader
+            images={selectedImages}
+            onImagesChange={setSelectedImages}
+            maxImages={3}
+            disabled={isSubmitting}
+          />
+          <p className="text-xs text-muted-foreground mt-2">
+            最大3枚まで画像を添付できます
           </p>
         </div>
 

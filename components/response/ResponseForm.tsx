@@ -2,6 +2,8 @@
 
 import { createResponse } from "@/actions/response";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { uploadImages } from "@/lib/supabase/storage";
 import type { CreateResponseInput } from "@/types/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -26,6 +28,7 @@ type FormData = z.infer<typeof schema>;
 export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const {
     register,
@@ -41,13 +44,30 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
     setIsSubmitting(true);
 
     try {
-      const result = await createResponse({
+      // 画像をアップロード
+      let imageUrls: string[] = [];
+      if (selectedImages.length > 0) {
+        try {
+          imageUrls = await uploadImages(selectedImages, "responses");
+        } catch (error) {
+          alert(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // レスポンスを作成
+      const responseData: CreateResponseInput = {
         threadId,
         content: data.content,
-      } as CreateResponseInput);
+        imageUrls,
+      };
+      
+      const result = await createResponse(responseData);
 
       if (result.success) {
         reset();
+        setSelectedImages([]);
         router.refresh();
         onSuccess?.();
       } else {
@@ -89,6 +109,19 @@ export function ResponseForm({ threadId, onSuccess }: ResponseFormProps) {
             複数のレスに返信する場合は改行して「&gt;&gt;2」「&gt;&gt;3」と続けてください
           </p>
         </div>
+      </div>
+
+      {/* 画像アップロード */}
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          画像（任意）
+        </label>
+        <ImageUploader
+          images={selectedImages}
+          onImagesChange={setSelectedImages}
+          maxImages={3}
+          disabled={isSubmitting}
+        />
       </div>
 
       {/* 注意事項 */}
